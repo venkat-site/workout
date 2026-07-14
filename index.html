@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>6-Day Home Gym Guide</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+  :root{
+    --bg:#15171a;
+    --panel:#1d2024;
+    --panel-2:#24272c;
+    --yellow:#f2c14e;
+    --yellow-dim:#8a6f2c;
+    --text:#eceae4;
+    --text-dim:#9a9da3;
+    --text-dim2:#8c8f95;
+    --line:#33363b;
+    --red:#e0524a;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:640px;margin:0 auto;padding:0 0 60px;}
+
+  header.top{
+    padding:28px 20px 18px;
+    position:sticky;top:0;
+    background:linear-gradient(180deg,var(--bg) 80%,transparent);
+    z-index:5;
+  }
+  .kicker{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    color:var(--yellow);
+    text-transform:uppercase;
+    margin:0 0 4px;
+  }
+  h1{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:42px;
+    letter-spacing:.02em;
+    margin:0;
+    line-height:1;
+    color:var(--text);
+  }
+  h1 span{color:var(--yellow);}
+
+  nav.days{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding:18px 20px 4px;
+    scrollbar-width:none;
+  }
+  nav.days::-webkit-scrollbar{display:none;}
+  .day-btn{
+    flex:0 0 auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+    background:var(--panel);
+    color:var(--text-dim2);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:9px 16px;
+    cursor:pointer;
+    transition:.15s ease;
+    white-space:nowrap;
+  }
+  .day-btn:hover{border-color:var(--yellow-dim);color:var(--text);}
+  .day-btn.active{
+    background:var(--yellow);
+    color:#15171a;
+    border-color:var(--yellow);
+    font-weight:700;
+  }
+
+  main{padding:10px 20px 0;}
+
+  .day-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin:18px 2px 16px;
+    padding-bottom:14px;
+    border-bottom:1px solid var(--line);
+  }
+  .day-head .name{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:28px;
+    letter-spacing:.02em;
+  }
+  .day-head .count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color:var(--text-dim2);
+  }
+
+  .note-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-left:3px solid var(--yellow);
+    border-radius:6px;
+    padding:16px 18px;
+    margin-bottom:14px;
+    font-size:14px;
+    line-height:1.55;
+    color:var(--text-dim2);
+  }
+  .note-card b{color:var(--text);}
+  .note-card ul{margin:8px 0 0;padding-left:18px;}
+  .note-card li{margin-bottom:4px;}
+
+  .ex-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    cursor:pointer;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .ex-card:hover{border-color:var(--yellow-dim);}
+  .ex-card.open{background:var(--panel-2);border-color:var(--yellow-dim);}
+
+  .ex-top{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .ex-icon{
+    flex:0 0 auto;
+    width:64px;height:64px;
+    border-radius:10px;
+    background:#15171a;
+    border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .ex-icon svg{width:40px;height:40px;stroke:var(--yellow);fill:none;}
+
+  .ex-info{flex:1;min-width:0;}
+  .ex-name{
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 2px;
+    color:var(--text);
+  }
+  .ex-muscle{
+    font-size:11.5px;
+    color:var(--text-dim2);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+  }
+  .ex-sets{
+    font-family:'JetBrains Mono',monospace;
+    font-size:15px;
+    font-weight:700;
+    color:var(--yellow);
+    flex:0 0 auto;
+    text-align:right;
+  }
+  .ex-caret{
+    flex:0 0 auto;
+    width:16px;height:16px;
+    color:var(--text-dim2);
+    transition:transform .2s ease;
+  }
+  .ex-card.open .ex-caret{transform:rotate(180deg);}
+
+  .ex-cues{
+    max-height:0;
+    overflow:hidden;
+    transition:max-height .25s ease;
+  }
+  .ex-card.open .ex-cues{max-height:220px;}
+  .ex-cues-inner{
+    padding:14px 2px 2px 60px;
+    font-size:13.5px;
+    line-height:1.6;
+    color:var(--text-dim2);
+  }
+  .ex-cues-inner div{
+    position:relative;
+    padding-left:14px;
+    margin-bottom:5px;
+  }
+  .ex-cues-inner div::before{
+    content:'';
+    position:absolute;left:0;top:8px;
+    width:5px;height:5px;
+    background:var(--yellow);
+    border-radius:50%;
+  }
+
+  footer.legend{
+    margin-top:24px;
+    padding-top:16px;
+    border-top:1px solid var(--line);
+    font-size:11.5px;
+    color:var(--text-dim2);
+    text-align:center;
+    font-family:'JetBrains Mono',monospace;
+    letter-spacing:.03em;
+  }
+
+  /* ---- Log tab ---- */
+  .nav-divider{
+    flex:0 0 auto;
+    width:1px;
+    background:var(--line);
+    margin:4px 4px;
+  }
+  .log-btn{
+    flex:0 0 auto;
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    letter-spacing:.04em;
+    background:var(--panel);
+    color:var(--text-dim2);
+    border:1px solid var(--red);
+    border-radius:999px;
+    padding:9px 16px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .log-btn.active{
+    background:var(--red);
+    color:#fff;
+    border-color:var(--red);
+    font-weight:700;
+  }
+
+  .form-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:18px;
+    margin-bottom:18px;
+  }
+  .form-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  .form-row.stack{flex-direction:column;}
+  .field{flex:1;min-width:0;}
+  .field label{
+    display:block;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--text-dim2);
+    margin-bottom:6px;
+  }
+  .field input[type="date"],
+  .field input[type="number"],
+  .field input[type="text"],
+  .field select{
+    width:100%;
+    background:#15171a;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:10px 12px;
+  }
+  .field input:focus, .field select:focus{outline:none;border-color:var(--yellow-dim);}
+  .field.readonly input{color:var(--yellow);font-weight:700;font-family:'JetBrains Mono',monospace;}
+
+  .switch-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#15171a;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:14px;
+  }
+  .switch-row .lbl{font-size:14px;font-weight:600;}
+  .switch{
+    position:relative;
+    width:46px;height:26px;
+    flex:0 0 auto;
+  }
+  .switch input{opacity:0;width:0;height:0;position:absolute;}
+  .switch .track{
+    position:absolute;inset:0;
+    background:var(--line);
+    border-radius:999px;
+    transition:.15s ease;
+    cursor:pointer;
+  }
+  .switch .track::before{
+    content:'';
+    position:absolute;
+    width:20px;height:20px;
+    left:3px;top:3px;
+    background:var(--text-dim2);
+    border-radius:50%;
+    transition:.15s ease;
+  }
+  .switch input:checked + .track{background:var(--yellow-dim);}
+  .switch input:checked + .track::before{transform:translateX(20px);background:var(--yellow);}
+
+  #workoutFields{
+    display:none;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+    margin-top:2px;
+  }
+  #workoutFields.show{display:block;}
+
+  .ex-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+    align-items:center;
+  }
+  .ex-row input{flex:1;}
+  .ex-row .ex-weight{flex:0 0 90px;}
+  .rm-btn{
+    flex:0 0 auto;
+    width:34px;height:34px;
+    background:#15171a;
+    border:1px solid var(--line);
+    border-radius:6px;
+    color:var(--text-dim2);
+    cursor:pointer;
+    font-size:16px;
+    line-height:1;
+  }
+  .rm-btn:hover{color:var(--red);border-color:var(--red);}
+  .add-ex-btn{
+    width:100%;
+    background:transparent;
+    border:1px dashed var(--line);
+    border-radius:6px;
+    color:var(--text-dim2);
+    padding:9px;
+    font-size:13px;
+    cursor:pointer;
+    margin-top:2px;
+  }
+  .add-ex-btn:hover{border-color:var(--yellow-dim);color:var(--yellow);}
+
+  .save-btn{
+    width:100%;
+    background:var(--yellow);
+    color:#15171a;
+    border:none;
+    border-radius:8px;
+    padding:13px;
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:.02em;
+    cursor:pointer;
+    margin-top:6px;
+  }
+  .save-btn:hover{background:#f5cd6e;}
+  .save-msg{
+    text-align:center;
+    font-size:12px;
+    color:var(--yellow);
+    margin-top:8px;
+    height:16px;
+    font-family:'JetBrains Mono',monospace;
+  }
+
+  .log-history h2{
+    font-family:'Bebas Neue',sans-serif;
+    font-size:20px;
+    letter-spacing:.02em;
+    margin:0 0 12px 2px;
+    color:var(--text-dim2);
+  }
+  .log-entry{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:12px 14px;
+    margin-bottom:8px;
+  }
+  .log-entry .row1{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  }
+  .log-entry .date{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    font-weight:700;
+    color:var(--text);
+  }
+  .log-entry .tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:3px 8px;
+    border-radius:999px;
+    border:1px solid var(--line);
+    color:var(--text-dim2);
+  }
+  .log-entry .tag.rest{color:var(--text-dim2);}
+  .log-entry .tag.done{color:var(--yellow);border-color:var(--yellow-dim);}
+  .log-entry .stats{
+    display:flex;
+    gap:16px;
+    margin-top:8px;
+    font-size:12.5px;
+    color:var(--text-dim2);
+    font-family:'JetBrains Mono',monospace;
+  }
+  .log-entry .stats b{color:var(--text);}
+  .log-entry .ex-list{
+    margin-top:8px;
+    font-size:13px;
+    color:var(--text-dim2);
+    line-height:1.6;
+  }
+  .log-entry .del{
+    flex:0 0 auto;
+    background:none;
+    border:none;
+    color:var(--text-dim2);
+    cursor:pointer;
+    font-size:13px;
+    padding:2px 4px;
+  }
+  .log-entry .del:hover{color:var(--red);}
+  .log-empty{
+    text-align:center;
+    color:var(--text-dim2);
+    font-size:13px;
+    padding:24px 0;
+  }
+  .log-loading{
+    text-align:center;
+    color:var(--text-dim2);
+    font-size:13px;
+    padding:24px 0;
+    font-family:'JetBrains Mono',monospace;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <p class="kicker">Home Gym // 6-Day Split</p>
+    <h1>Tap a <span>day</span>. Tap a lift.</h1>
+  </header>
+
+  <nav class="days" id="dayNav"></nav>
+
+  <main id="main"></main>
+</div>
+
+<script>
+const ICONS = {
+  press: `<circle cx="4" cy="17" r="1.8" stroke-width="1.6"/><path d="M4 18.5v-5l5-2 3 1 3-1 5 2v5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 8h20M9 8v-2M15 8v-2" stroke-width="1.6" stroke-linecap="round"/><path d="M9 6l3 2 3-2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  inclinepress: `<path d="M2 20h9l7-9" stroke-width="1.6" stroke-linecap="round"/><circle cx="15" cy="8" r="1.8" stroke-width="1.6"/><path d="M15 10v3M12 11l3 2 3-2M9 20l3-6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  fly: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v9M12 10c-3-3-6-3-8-1M12 10c3-3 6-3 8-1M9 20h6" stroke-width="1.6" stroke-linecap="round"/>`,
+  ohp: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v8M6 3h12M6 3l-2 2M18 3l2 2M9 20h6M12 14l-2 3M12 14l2 3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  lateral: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v8M1 9h9M14 9h9M9 20h6M12 14l-2 3M12 14l2 3" stroke-width="1.6" stroke-linecap="round"/>`,
+  row: `<circle cx="6" cy="6" r="1.8" stroke-width="1.6"/><path d="M6 8v5M2 20h9M6 13l5 1M14 10h9M17 6l4 4-4 4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  pullover: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v6M3 3c2 5 5 7 9 7s7-2 9-7M9 20h6" stroke-width="1.6" stroke-linecap="round"/>`,
+  curl: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v7M12 13l4 4M4 20h6M14 15h6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  tricep: `<circle cx="12" cy="3" r="1.8" stroke-width="1.6"/><path d="M12 5v6M12 11l-3 6M6 3h4M14 3h4M9 20h6" stroke-width="1.6" stroke-linecap="round"/>`,
+  wrist: `<path d="M2 15h11l4-4-4-4H2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="20" cy="11" r="1.8" stroke-width="1.6"/>`,
+  squat: `<circle cx="12" cy="3" r="1.8" stroke-width="1.6"/><path d="M6 8h12M9 8v6l-3 6M15 8v6l3 6M9 14l3 2 3-2" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  hinge: `<circle cx="8" cy="4" r="1.8" stroke-width="1.6"/><path d="M8 6l7 4-2 10M15 10l7-1M11 19h5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  lunge: `<circle cx="10" cy="3" r="1.8" stroke-width="1.6"/><path d="M10 5v6M10 11l-6 8M10 11l5 3-1 5M3 20h4M12 20h4" stroke-width="1.6" stroke-linecap="round"/>`,
+  calf: `<path d="M4 20h16M9 20v-5l4-8 3 2-2 6-1 5" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="13" cy="5" r="1.8" stroke-width="1.6"/>`,
+  core: `<circle cx="3" cy="14" r="1.8" stroke-width="1.6"/><path d="M5 14h16M5 14l4 6M5 14l4-4" stroke-width="1.6" stroke-linecap="round"/>`,
+  twist: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v6M12 12l6-2M12 12l6 2M8 20h8" stroke-width="1.6" stroke-linecap="round"/>`,
+  pushup: `<circle cx="4" cy="10" r="1.8" stroke-width="1.6"/><path d="M6 11l15 3M4 20l2-9M12 12.5l1 6.5M22 14l-2 6" stroke-width="1.6" stroke-linecap="round"/>`,
+  dip: `<circle cx="12" cy="3" r="1.8" stroke-width="1.6"/><path d="M12 5v7M5 8v9M19 8v9M5 8h14M8 20v-4M16 20v-4" stroke-width="1.6" stroke-linecap="round"/>`,
+  shrug: `<circle cx="12" cy="4" r="1.8" stroke-width="1.6"/><path d="M12 6v9M6 8l3-1M18 8l-3-1M9 20h6" stroke-width="1.6" stroke-linecap="round"/>`,
+  carry: `<circle cx="12" cy="3" r="1.8" stroke-width="1.6"/><path d="M12 5v7M4 8v6M20 8v6M4 8h4M16 8h4M9 20l3-6 3 6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  cardio: `<circle cx="6" cy="4" r="1.8" stroke-width="1.6"/><path d="M6 6l2 5-3 4M8 11l4 1 3 6M12 12l3-5 4 1" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  stretch: `<circle cx="12" cy="3" r="1.8" stroke-width="1.6"/><path d="M12 5v7M12 7l-7-2M12 7l7-2M12 12l-4 8M12 12l4 8" stroke-width="1.6" stroke-linecap="round"/>`
+};
+
+function icon(key){ return `<svg viewBox="0 0 24 24">${ICONS[key]||ICONS.press}</svg>`; }
+
+const DATA = {
+  warmup: {
+    label: "Warm-up", short:"Warm-up",
+    note: "10 minutes, every session — before any working sets.",
+    items: [
+      {name:"Brisk walk / march in place", sets:"5 min", muscle:"Full body", icon:"cardio",
+        cues:["Raise heart rate gently, arms swinging naturally","Nasal breathing if comfortable"]},
+      {name:"Arm circles", sets:"20 reps", muscle:"Shoulders", icon:"lateral",
+        cues:["Small circles growing to large, both directions","Keep core braced, don't shrug"]},
+      {name:"Hip circles", sets:"10 each way", muscle:"Hips", icon:"twist",
+        cues:["Hands on hips, big slow rotations","Keep knees soft"]},
+      {name:"Bodyweight squats", sets:"1x15", muscle:"Legs", icon:"squat",
+        cues:["Slow tempo, full range, no weight yet","Just grooving the pattern"]},
+      {name:"Shoulder mobility (band or arm swings)", sets:"1-2 min", muscle:"Shoulders", icon:"press",
+        cues:["Cross-body swings, wall slides, or band pull-aparts"]},
+      {name:"Light warm-up sets", sets:"2 sets", muscle:"Target lift", icon:"ohp",
+        cues:["50-60% of your first working weight","Stop well short of failure — this is rehearsal"]}
+    ]
+  },
+  mon: { label:"Day 1 · Push A", short:"Day 1", items:[
+    {name:"Barbell Bench Press", sets:"4×6-8", muscle:"Chest, triceps", icon:"press",
+      cues:["Shoulder blades pinned back and down, feet flat","Bar to mid-chest, elbows ~45° from torso","Drive feet into floor as you press up"]},
+    {name:"Incline DB Press", sets:"3×8-10", muscle:"Upper chest", icon:"inclinepress",
+      cues:["Bench at 30-45°, dumbbells over upper chest","Lower under control, don't flare elbows to 90°"]},
+    {name:"DB Flyes", sets:"3×12", muscle:"Chest", icon:"fly",
+      cues:["Soft bend in elbows held constant throughout","Wide arc down, squeeze chest to bring back up"]},
+    {name:"Standing OHP", sets:"4×8", muscle:"Shoulders", icon:"ohp",
+      cues:["Brace core, glutes tight — no arching the back","Bar path close to face, lock out overhead"]},
+    {name:"Lateral Raises", sets:"3×15", muscle:"Side delts", icon:"lateral",
+      cues:["Slight bend in elbows, lead with elbows not hands","Raise to shoulder height, control the descent"]},
+    {name:"Close Grip Bench", sets:"3×10", muscle:"Triceps", icon:"press",
+      cues:["Hands just inside shoulder width","Elbows tucked close to the body throughout"]},
+    {name:"OH DB Extension", sets:"3×12", muscle:"Triceps", icon:"tricep",
+      cues:["One or two hands overhead, elbows pointed forward","Lower behind head, extend without flaring elbows out"]},
+    {name:"Push-ups", sets:"2 sets", muscle:"Chest, core", icon:"pushup",
+      cues:["Straight line head to heels, brace the core","Chest to just above floor, full lockout at top"]}
+  ]},
+  tue: { label:"Day 2 · Pull A", short:"Day 2", items:[
+    {name:"BB Row", sets:"4×8", muscle:"Back, lats", icon:"row",
+      cues:["Hinge to ~45°, flat back, soft knee bend","Pull bar to lower ribs, squeeze shoulder blades"]},
+    {name:"1-arm DB Row", sets:"3×10", muscle:"Lats", icon:"row",
+      cues:["Support with opposite hand/knee on bench","Pull elbow past hip, avoid rotating torso"]},
+    {name:"DB Pullover", sets:"3×12", muscle:"Lats, chest", icon:"pullover",
+      cues:["Lie across bench, hips low, core braced","Arc dumbbell overhead then back to chest"]},
+    {name:"Reverse Fly", sets:"3×15", muscle:"Rear delts", icon:"fly",
+      cues:["Hinge forward, slight elbow bend","Raise arms out to sides, squeeze shoulder blades"]},
+    {name:"BB Curl", sets:"3×10", muscle:"Biceps", icon:"curl",
+      cues:["Elbows pinned to sides, no swinging","Full range top to bottom, controlled lowering"]},
+    {name:"Hammer Curl", sets:"3×12", muscle:"Biceps, forearms", icon:"curl",
+      cues:["Neutral grip, thumbs facing up throughout","Elbows stay fixed at your sides"]},
+    {name:"Wrist Curl", sets:"2×20", muscle:"Forearms", icon:"wrist",
+      cues:["Forearms on thighs/bench, palms up","Curl bar up using wrists only, full stretch down"]},
+    {name:"Reverse Wrist Curl", sets:"2×20", muscle:"Forearms", icon:"wrist",
+      cues:["Same position, palms facing down","Small range — this one is deceptively hard, go light"]}
+  ]},
+  wed: { label:"Day 3 · Legs / Core", short:"Day 3", items:[
+    {name:"Squat", sets:"4×8", muscle:"Quads, glutes", icon:"squat",
+      cues:["Bar on upper traps, brace core before descending","Hips and knees track together, chest stays tall"]},
+    {name:"Romanian DL", sets:"4×10", muscle:"Hamstrings, glutes", icon:"hinge",
+      cues:["Soft knees, push hips back not down","Bar stays close to legs, flat back throughout"]},
+    {name:"Walking Lunges", sets:"3×12", muscle:"Legs, glutes", icon:"lunge",
+      cues:["Long enough stride for 90° front knee","Torso upright, push through front heel to stand"]},
+    {name:"Goblet Squat", sets:"3×12", muscle:"Quads, core", icon:"squat",
+      cues:["Hold weight at chest, elbows inside knees","Sit down between the legs, chest tall"]},
+    {name:"Calf Raise", sets:"4×20", muscle:"Calves", icon:"calf",
+      cues:["Full stretch at bottom, pause at the top","Slow and controlled — resist bouncing"]},
+    {name:"Plank", sets:"3×1 min", muscle:"Core", icon:"core",
+      cues:["Straight line shoulders to ankles","Squeeze glutes, don't let hips sag or pike"]},
+    {name:"Leg Raises", sets:"3×15", muscle:"Lower abs", icon:"core",
+      cues:["Lower back pressed to floor/bench","Lower legs slow and controlled, don't let them drop"]},
+    {name:"Russian Twist", sets:"3×20", muscle:"Obliques", icon:"twist",
+      cues:["Lean back slightly, feet lifted or grounded","Rotate from the torso, tap each side"]}
+  ]},
+  thu: { label:"Day 4 · Push B", short:"Day 4", items:[
+    {name:"Incline Bench", sets:"4×8", muscle:"Upper chest", icon:"inclinepress",
+      cues:["Bench 30-45°, bar to upper chest","Elbows ~45° from torso, drive up and slightly back"]},
+    {name:"Flat DB Press", sets:"3×10", muscle:"Chest", icon:"press",
+      cues:["Dumbbells start over chest, press straight up","Slight arc inward at the top, control the descent"]},
+    {name:"Push-ups", sets:"3 sets", muscle:"Chest, core", icon:"pushup",
+      cues:["Straight body line, brace the core","Full range, elbows ~45° from torso"]},
+    {name:"Arnold Press", sets:"3×10", muscle:"Shoulders", icon:"ohp",
+      cues:["Start palms facing you, rotate as you press","Finish palms forward, fully locked out overhead"]},
+    {name:"Lateral Raise", sets:"3×15", muscle:"Side delts", icon:"lateral",
+      cues:["Lead with elbows, slight forward lean","Stop at shoulder height, no shrugging"]},
+    {name:"Front Raise", sets:"3×12", muscle:"Front delts", icon:"ohp",
+      cues:["Raise to eye level, slight bend in elbows","Control the negative, avoid using momentum"]},
+    {name:"Skull Crushers", sets:"3×10", muscle:"Triceps", icon:"tricep",
+      cues:["Elbows fixed pointing at ceiling","Lower bar to forehead/behind head, extend fully"]},
+    {name:"Bench Dips", sets:"3×15", muscle:"Triceps", icon:"dip",
+      cues:["Hands on bench edge, legs extended","Lower until elbows ~90°, press back up"]}
+  ]},
+  fri: { label:"Day 5 · Pull B", short:"Day 5", items:[
+    {name:"Deadlift", sets:"4×5", muscle:"Full posterior chain", icon:"hinge",
+      cues:["Bar over midfoot, flat back, chest up","Push floor away, bar stays close to shins/thighs"]},
+    {name:"Pendlay Row", sets:"3×8", muscle:"Back", icon:"row",
+      cues:["Torso parallel to floor, bar starts on ground each rep","Explosive pull to lower chest, strict no momentum"]},
+    {name:"DB Shrugs", sets:"4×15", muscle:"Traps", icon:"shrug",
+      cues:["Arms straight, shrug straight up (not rolling)","Pause briefly at top, control the descent"]},
+    {name:"Reverse Fly", sets:"3×15", muscle:"Rear delts", icon:"fly",
+      cues:["Hinge forward, chest up, slight elbow bend","Squeeze shoulder blades at the top"]},
+    {name:"Incline Curl", sets:"3×10", muscle:"Biceps", icon:"curl",
+      cues:["Incline bench, arms hang straight down","Full stretch at bottom, curl without swinging"]},
+    {name:"Concentration Curl", sets:"3×12", muscle:"Biceps", icon:"curl",
+      cues:["Elbow braced against inner thigh","Slow controlled curl, squeeze at the top"]},
+    {name:"Farmer Carry", sets:"3 rounds", muscle:"Grip, core, traps", icon:"carry",
+      cues:["Heavy dumbbells/kettlebells, stand tall","Walk with short controlled steps, brace core"]}
+  ]},
+  sat: { label:"Day 6 · Legs + Conditioning", short:"Day 6", items:[
+    {name:"Front Squat", sets:"4×8", muscle:"Quads, core", icon:"squat",
+      cues:["Bar rests on front delts, elbows high","Stay upright, sit straight down between legs"]},
+    {name:"Bulgarian Split Squat", sets:"3×10", muscle:"Quads, glutes", icon:"lunge",
+      cues:["Rear foot elevated on bench","Front shin stays fairly vertical, drop straight down"]},
+    {name:"Romanian DL", sets:"3×12", muscle:"Hamstrings, glutes", icon:"hinge",
+      cues:["Soft knees, hips push back, flat back","Bar/dumbbells stay close to legs"]},
+    {name:"Step-ups", sets:"3×12", muscle:"Quads, glutes", icon:"lunge",
+      cues:["Full foot on box, drive through the heel","Stand tall at top, control the step down"]},
+    {name:"Conditioning or Walk", sets:"20-40 min", muscle:"Cardio", icon:"cardio",
+      cues:["20-25 min moderate conditioning, or","30-40 min brisk walk — keep it conversational pace"]}
+  ]},
+  cooldown: {
+    label:"Cool-down", short:"Cool-down",
+    note:"10 minutes, every session — right after your last set.",
+    items:[
+      {name:"Slow walk", sets:"3-5 min", muscle:"Full body", icon:"cardio",
+        cues:["Let heart rate settle gradually","Loose arm swings, easy breathing"]},
+      {name:"Stretch chest, shoulders, back", sets:"20-30 sec each", muscle:"Upper body", icon:"stretch",
+        cues:["Hold each stretch to mild tension, not pain","Breathe slowly through each hold"]},
+      {name:"Stretch quads, hamstrings, calves, hips", sets:"20-30 sec each", muscle:"Lower body", icon:"stretch",
+        cues:["Static holds, no bouncing","Both sides evenly"]},
+      {name:"Deep breathing", sets:"2 min", muscle:"Recovery", icon:"core",
+        cues:["Slow nasal inhale, longer exhale","Shift into rest-and-digest before you leave"]},
+      {name:"Hydrate + protein meal", sets:"Within 1-2 hrs", muscle:"Recovery", icon:"carry",
+        cues:["Water first","Aim for 25-40g protein in your next meal"]}
+    ]
+  }
+};
+
+const ORDER = ["warmup","mon","tue","wed","thu","fri","sat","cooldown"];
+
+const nav = document.getElementById('dayNav');
+const main = document.getElementById('main');
+
+ORDER.forEach(key=>{
+  const btn = document.createElement('button');
+  btn.className = 'day-btn';
+  btn.textContent = DATA[key].short;
+  btn.dataset.key = key;
+  btn.addEventListener('click', ()=> render(key));
+  nav.appendChild(btn);
+});
+
+const divider = document.createElement('div');
+divider.className = 'nav-divider';
+nav.appendChild(divider);
+
+const logBtn = document.createElement('button');
+logBtn.className = 'log-btn';
+logBtn.textContent = 'My Log';
+logBtn.dataset.key = 'log';
+logBtn.addEventListener('click', ()=> render('log'));
+nav.appendChild(logBtn);
+
+function render(key){
+  document.querySelectorAll('.day-btn, .log-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.key===key);
+  });
+  if(key === 'log'){ renderLog(); return; }
+  const day = DATA[key];
+  let html = `<div class="day-head"><div class="name">${day.label}</div><div class="count">${day.items.length} EXERCISES</div></div>`;
+  if(day.note){
+    html += `<div class="note-card"><b>${day.note}</b></div>`;
+  }
+  day.items.forEach((ex,i)=>{
+    html += `
+    <div class="ex-card" data-idx="${i}">
+      <div class="ex-top">
+        <div class="ex-icon">${icon(ex.icon)}</div>
+        <div class="ex-info">
+          <p class="ex-name">${ex.name}</p>
+          <p class="ex-muscle">${ex.muscle}</p>
+        </div>
+        <div class="ex-sets">${ex.sets}</div>
+        <svg class="ex-caret" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+      <div class="ex-cues">
+        <div class="ex-cues-inner">
+          ${ex.cues.map(c=>`<div>${c}</div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  });
+  html += `<footer class="legend">Rest 60-90s isolation · 2-3min compound · Tap a lift for form cues</footer>`;
+  main.innerHTML = html;
+
+  main.querySelectorAll('.ex-card').forEach(card=>{
+    card.addEventListener('click', ()=> card.classList.toggle('open'));
+  });
+}
+
+// ---- Log tab logic ----
+const LOG_KEY = 'workout-log-entries';
+
+async function getEntries(){
+  try{
+    const raw = localStorage.getItem(LOG_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){
+    return [];
+  }
+}
+
+async function saveEntries(entries){
+  try{
+    localStorage.setItem(LOG_KEY, JSON.stringify(entries));
+    return true;
+  }catch(e){
+    return false;
+  }
+}
+
+function calcBMI(weightKg, heightCm){
+  if(!weightKg || !heightCm) return null;
+  const h = heightCm / 100;
+  return +(weightKg / (h*h)).toFixed(1);
+}
+
+function bmiLabel(bmi){
+  if(bmi===null) return '';
+  if(bmi < 18.5) return 'Underweight';
+  if(bmi < 25) return 'Normal';
+  if(bmi < 30) return 'Overweight';
+  return 'Obese';
+}
+
+async function renderLog(){
+  main.innerHTML = `<div class="log-loading">Loading your log…</div>`;
+  const entries = await getEntries();
+  const lastHeight = entries.length ? entries[entries.length-1].heightCm : '';
+  const today = new Date().toISOString().slice(0,10);
+
+  main.innerHTML = `
+    <div class="day-head"><div class="name">My Log</div><div class="count">${entries.length} ENTR${entries.length===1?'Y':'IES'}</div></div>
+
+    <div class="form-card">
+      <div class="form-row">
+        <div class="field">
+          <label>Date</label>
+          <input type="date" id="f-date" value="${today}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label>Body weight (kg)</label>
+          <input type="number" id="f-weight" step="0.1" placeholder="e.g. 72.5">
+        </div>
+        <div class="field">
+          <label>Height (cm)</label>
+          <input type="number" id="f-height" step="0.1" placeholder="e.g. 175" value="${lastHeight}">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="field readonly">
+          <label>BMI (auto)</label>
+          <input type="text" id="f-bmi" value="—" readonly>
+        </div>
+      </div>
+
+      <div class="switch-row">
+        <span class="lbl">Workout done today?</span>
+        <label class="switch">
+          <input type="checkbox" id="f-done">
+          <span class="track"></span>
+        </label>
+      </div>
+
+      <div id="workoutFields">
+        <div class="form-row">
+          <div class="field">
+            <label>Workout type</label>
+            <select id="f-type">
+              <option value="Push">Push</option>
+              <option value="Pull">Pull</option>
+              <option value="Legs">Legs</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="save-btn" id="saveBtn">Save entry</button>
+      <div class="save-msg" id="saveMsg"></div>
+    </div>
+
+    <div class="log-history">
+      <h2>History</h2>
+      <div id="historyList"></div>
+    </div>
+  `;
+
+  const weightEl = document.getElementById('f-weight');
+  const heightEl = document.getElementById('f-height');
+  const bmiEl = document.getElementById('f-bmi');
+  const doneEl = document.getElementById('f-done');
+  const workoutFields = document.getElementById('workoutFields');
+
+  function updateBMI(){
+    const w = parseFloat(weightEl.value);
+    const h = parseFloat(heightEl.value);
+    const bmi = calcBMI(w,h);
+    bmiEl.value = bmi ? `${bmi} · ${bmiLabel(bmi)}` : '—';
+  }
+  weightEl.addEventListener('input', updateBMI);
+  heightEl.addEventListener('input', updateBMI);
+
+  doneEl.addEventListener('change', ()=>{
+    workoutFields.classList.toggle('show', doneEl.checked);
+  });
+
+  document.getElementById('saveBtn').addEventListener('click', async ()=>{
+    const saveMsg = document.getElementById('saveMsg');
+    const date = document.getElementById('f-date').value;
+    const weight = parseFloat(weightEl.value);
+    const height = parseFloat(heightEl.value);
+
+    if(!date || !weight || !height){
+      saveMsg.textContent = 'Please fill in date, weight and height.';
+      saveMsg.style.color = 'var(--red)';
+      return;
+    }
+
+    const entry = {
+      id: Date.now().toString(),
+      date,
+      weightKg: weight,
+      heightCm: height,
+      bmi: calcBMI(weight, height),
+      workoutDone: doneEl.checked,
+      workoutType: doneEl.checked ? document.getElementById('f-type').value : null
+    };
+
+    const current = await getEntries();
+    current.push(entry);
+    const ok = await saveEntries(current);
+    saveMsg.style.color = ok ? 'var(--yellow)' : 'var(--red)';
+    saveMsg.textContent = ok ? 'Saved.' : 'Could not save — try again.';
+    if(ok){ renderLog(); }
+  });
+
+  renderHistory(entries);
+}
+
+function renderHistory(entries){
+  const list = document.getElementById('historyList');
+  if(!entries.length){
+    list.innerHTML = `<div class="log-empty">No entries yet — log today's stats above.</div>`;
+    return;
+  }
+  const sorted = [...entries].sort((a,b)=> b.date.localeCompare(a.date));
+  list.innerHTML = sorted.map(e=>{
+    return `
+    <div class="log-entry" data-id="${e.id}">
+      <div class="row1">
+        <span class="date">${e.date}</span>
+        <span class="tag ${e.workoutDone?'done':'rest'}">${e.workoutDone ? e.workoutType : 'Rest'}</span>
+        <button class="del" data-id="${e.id}">Delete</button>
+      </div>
+      <div class="stats">
+        <span>Weight <b>${e.weightKg}kg</b></span>
+        <span>Height <b>${e.heightCm}cm</b></span>
+        <span>BMI <b>${e.bmi ?? '—'}</b></span>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const id = btn.dataset.id;
+      const current = await getEntries();
+      const updated = current.filter(e=> e.id !== id);
+      await saveEntries(updated);
+      renderLog();
+    });
+  });
+}
+
+render('mon');
+document.querySelector('[data-key="mon"]').classList.add('active');
+</script>
+</body>
+</html>
